@@ -1,6 +1,6 @@
 {
   "name": "@gigscom/embeds-react-native",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Gigs Embeds for React Native",
   "scripts": {
     "test": "jest",
