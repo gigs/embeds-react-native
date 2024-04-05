@@ -16,6 +16,7 @@
   "react-native": "src/index",
   "source": "src/index",
   "author": "Gigs <info@gigs.com> (https://github.com/gigs)",
+  "repository": "gigs/embeds-react-native",
   "license": "MIT",
   "devDependencies": {
     "@react-native/eslint-config": "^0.72.2",
