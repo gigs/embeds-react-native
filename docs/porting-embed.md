@@ -238,8 +238,8 @@ Render prop function that can be used to customize the rendering of alert banner
 Alert banners are used either to convey information or to display errors. 
 The `'info'` type appears in the `holderDetails` and `address` steps as follows:
 
-<img width="400" src=".github/holderDetailsInfo.png" alt="Account holder info alert banner">
-<img width="400" src=".github/addressInfo.png" alt="Address info alert banner">
+<img width="400" src="./holderDetailsInfo.png" alt="Account holder info alert banner">
+<img width="400" src="./addressInfo.png" alt="Address info alert banner">
 
 The `'error'` type appears whenever there is an error after submitting a porting step, or if the porting has been declined (see all the declined messages [here](https://github.com/gigs/embeds-react-native/blob/main/src/PortingEmbed/util/portingUtils.tsx#L96)). 
 

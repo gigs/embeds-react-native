@@ -1,6 +1,6 @@
 # Gigs Embeds for React Native
 
-<img width="600" height="390" src=".github/banner.png" alt="Gigs Embeds">
+<img width="600" height="390" src="docs/banner.png" alt="Gigs Embeds">
 
 Embeddable prebuilt and customizable UI components to use in your own React Native app.
 
