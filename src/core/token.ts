@@ -37,8 +37,8 @@ export async function exchangeSessionWithToken(
     connectSession.url,
     'The ConnectSession has no URL. The created resource must be passed into the embed.'
   )
-  const url = new URL(connectSession.url)
-  const csnToken = url.searchParams.get('token')
+  const tokenMatch = connectSession.url.match(/[?&]token=([^&]+)/)
+  const csnToken = tokenMatch ? tokenMatch[1] : null
   assert(
     csnToken,
     'The URL in the ConnectSession has no token. You must pass in an authenticated ConnectSession.'
