@@ -121,6 +121,7 @@ export default function PortingEmbedScreen() {
           onCompleted={() => setCompleted(true)}
           onSupportRequested={() => setClickedCustomerSupport(true)}
           onPortingStep={(step) => setPortingStep(step)}
+          defaultTextFont="Satoshi-Regular"
           renderTitle={(step) =>
             step != null && (
               <Text style={[customStyles.title]}>{titles[step]}</Text>

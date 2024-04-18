@@ -8,6 +8,7 @@ import {
   TextInputProps,
 } from 'react-native'
 
+import { useOptionsContext } from '../PortingEmbed/CustomOptionsProvider'
 import { EmbedText } from './EmbedText'
 
 type Props = {
@@ -18,6 +19,7 @@ type Props = {
 export function Input({ error, placeholder, ...rest }: Props) {
   const [inputText, setInputText] = useState('')
   const animatedValue = useRef(new Animated.Value(0))
+  const options = useOptionsContext()
 
   const returnAnimatedLabelStyles = {
     transform: [
@@ -65,7 +67,6 @@ export function Input({ error, placeholder, ...rest }: Props) {
       borderRadius: 8,
       fontWeight: '500',
       borderWidth: 0,
-      fontFamily: 'Satoshi-Regular',
     },
   })
 
@@ -81,8 +82,10 @@ export function Input({ error, placeholder, ...rest }: Props) {
             pointerEvents: 'none',
             color: '#6b7280',
             height: 20,
-            fontFamily: 'Satoshi-Regular',
           },
+          options?.defaultTextFont
+            ? { fontFamily: options.defaultTextFont }
+            : {},
         ]}
       >
         {placeholder}
@@ -91,7 +94,12 @@ export function Input({ error, placeholder, ...rest }: Props) {
         onChange={(e: NativeSyntheticEvent<TextInputChangeEventData>): void =>
           setInputText(e.nativeEvent.text)
         }
-        style={styles.textStyle}
+        style={[
+          styles.textStyle,
+          options?.defaultTextFont
+            ? { fontFamily: options.defaultTextFont }
+            : {},
+        ]}
         placeholderTextColor={error ? '#e11d48' : '#6b7280'}
         {...rest}
       />

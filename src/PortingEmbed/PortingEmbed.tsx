@@ -41,6 +41,7 @@ type Props = {
   renderPortingProtectionDisabledConfirmation?: (
     onConfirm: () => void
   ) => React.ReactNode
+  defaultTextFont?: string
 }
 
 export function PortingEmbed({
@@ -60,6 +61,7 @@ export function PortingEmbed({
   renderAlertBanner,
   renderDate,
   renderPortingProtectionDisabledConfirmation,
+  defaultTextFont,
 }: Props) {
   return (
     <ConnectSessionProvider
@@ -80,6 +82,7 @@ export function PortingEmbed({
         renderPortingProtectionDisabledConfirmation={
           renderPortingProtectionDisabledConfirmation
         }
+        defaultTextFont={defaultTextFont}
       >
         <PortingFormContainer
           onLoaded={onLoaded}

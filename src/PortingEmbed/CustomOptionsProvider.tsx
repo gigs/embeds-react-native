@@ -29,6 +29,7 @@ type EmbedOptions = {
   renderPortingProtectionDisabledConfirmation?: (
     onConfirm: () => void
   ) => React.ReactNode
+  defaultTextFont?: string
 }
 
 export const CustomOptionsContext = createContext<EmbedOptions | null>(null)
@@ -46,6 +47,7 @@ export function CustomOptionsProvider({
   renderAlertBanner,
   renderDate,
   renderPortingProtectionDisabledConfirmation,
+  defaultTextFont,
   children,
 }: Props) {
   return (
@@ -59,6 +61,7 @@ export function CustomOptionsProvider({
         renderAlertBanner,
         renderDate,
         renderPortingProtectionDisabledConfirmation,
+        defaultTextFont,
       }}
     >
       {children}

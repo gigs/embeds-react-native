@@ -227,4 +227,25 @@ describe('CarrierInfoForm', () => {
       color: 'red',
     })
   })
+  it('uses the default font if present', async () => {
+    render(
+      <CustomOptionsContext.Provider
+        value={{
+          defaultTextFont: 'Custom-font',
+        }}
+      >
+        <CarrierInfoForm
+          onSubmit={onSaveMock}
+          porting={{ ...porting, accountNumber: null, accountPinExists: false }}
+          error="Something went very wrong."
+        />
+      </CustomOptionsContext.Provider>
+    )
+
+    const button = screen.getByText('Save')
+
+    expect(button).toHaveStyle({
+      fontFamily: 'Custom-font',
+    })
+  })
 })

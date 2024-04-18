@@ -327,6 +327,16 @@ renderPortingProtectionDisabledConfirmation={(onConfirm) => (
           )}
 />
 ```
+#### `defaultTextFont`
+
+The default font that the embed uses for all default components, i.e. all components that are not replaced by a corresponding render prop (for example all inputs will use the `defaultTextFont` if no `renderInput` component was passed to the embed).
+
+```jsx
+<PortingEmbed
+//...
+defaultTextFont='Custom-font'
+/>
+```
 
 #### Porting Embed props
 
@@ -347,6 +357,7 @@ renderPortingProtectionDisabledConfirmation={(onConfirm) => (
 | `renderAlertBanner`        | function               | ❌       | `(variant: 'error' | 'info', message: string) => React.ReactNode` |
 | `renderDate`        | function               | ❌       | `(name: string, onChange: (value: string) => void) => React.ReactNode` |
 | `renderPortingProtectionDisabledConfirmation`        | function               | ❌       | `(onConfirm: () => void) => React.ReactNode` |
+| `defaultTextFont`        | string               | ❌       | Custom font used in all default components. |
 
 #### Text
 

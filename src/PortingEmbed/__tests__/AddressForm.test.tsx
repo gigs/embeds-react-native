@@ -295,4 +295,25 @@ describe('AddressForm', () => {
       color: 'red',
     })
   })
+  it('uses the default font if present', async () => {
+    render(
+      <CustomOptionsContext.Provider
+        value={{
+          defaultTextFont: 'Custom-font',
+        }}
+      >
+        <AddressForm
+          onSubmit={onSaveMock}
+          porting={{ ...porting, address: null }}
+          error="Something went very wrong."
+        />
+      </CustomOptionsContext.Provider>
+    )
+
+    const button = screen.getByText('Save')
+
+    expect(button).toHaveStyle({
+      fontFamily: 'Custom-font',
+    })
+  })
 })

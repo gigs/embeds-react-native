@@ -335,4 +335,25 @@ describe('AccountHolderForm', () => {
       color: 'red',
     })
   })
+
+  it('uses the default font if present', async () => {
+    render(
+      <CustomOptionsContext.Provider
+        value={{
+          defaultTextFont: 'Custom-font',
+        }}
+      >
+        <AccountHolderForm
+          onSubmit={onSaveMock}
+          porting={{ ...porting, firstName: null, lastName: null }}
+        />
+      </CustomOptionsContext.Provider>
+    )
+
+    const button = screen.getByText('Save')
+
+    expect(button).toHaveStyle({
+      fontFamily: 'Custom-font',
+    })
+  })
 })
