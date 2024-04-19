@@ -151,4 +151,24 @@ describe('DonorApprovalForm', () => {
       donorProviderApproval: true,
     })
   })
+  it('uses the default font if present', async () => {
+    render(
+      <CustomOptionsContext.Provider
+        value={{
+          defaultTextFont: 'Custom-font',
+        }}
+      >
+        <DonorApprovalForm
+          onSubmit={onSaveMock}
+          porting={{ ...porting, address: null }}
+        />
+      </CustomOptionsContext.Provider>
+    )
+
+    const button = screen.getByText('Save')
+
+    expect(button).toHaveStyle({
+      fontFamily: 'Custom-font',
+    })
+  })
 })
