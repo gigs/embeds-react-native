@@ -143,51 +143,90 @@ describe('AddressForm', () => {
     expect(stateInput).toBeOnTheScreen()
     expect(countryInput).toBeOnTheScreen()
   })
-  it('uses the custom button if present', async () => {
-    render(
-      <CustomOptionsContext.Provider
-        value={{
-          renderPrimaryButton: (onPress, _name, isSubmitting, disabled) => (
-            <Button
-              title={isSubmitting ? 'Loading...' : 'Submit'}
-              onPress={onPress}
-              disabled={disabled}
-            />
-          ),
-        }}
-      >
-        <AddressForm
-          onSubmit={onSaveMock}
-          porting={{ ...porting, address: null }}
-        />
-      </CustomOptionsContext.Provider>
-    )
+  describe('with a custom primary button', () => {
+    it('uses the custom button', async () => {
+      render(
+        <CustomOptionsContext.Provider
+          value={{
+            renderPrimaryButton: (onPress, _name, isSubmitting, disabled) => (
+              <Button
+                title={isSubmitting ? 'Loading...' : 'Submit'}
+                onPress={onPress}
+                disabled={disabled}
+              />
+            ),
+          }}
+        >
+          <AddressForm
+            onSubmit={onSaveMock}
+            porting={{ ...porting, address: null }}
+          />
+        </CustomOptionsContext.Provider>
+      )
 
-    const button = screen.getByText('Submit')
-    expect(button).toBeOnTheScreen()
-    expect(button).toBeDisabled()
+      const button = screen.getByText('Submit')
+      expect(button).toBeOnTheScreen()
+      expect(button).toBeDisabled()
 
-    const streetInput = screen.getByText('Street Address')
-    fireEvent.changeText(streetInput, 'Coconut Grove')
-    const cityInput = screen.getByText('City')
-    fireEvent.changeText(cityInput, 'Miami')
-    const countryInput = screen.getByText('Country')
-    fireEvent.changeText(countryInput, 'United States')
+      const streetInput = screen.getByText('Street Address')
+      fireEvent.changeText(streetInput, 'Coconut Grove')
+      const cityInput = screen.getByText('City')
+      fireEvent.changeText(cityInput, 'Miami')
+      const countryInput = screen.getByText('Country')
+      fireEvent.changeText(countryInput, 'United States')
 
-    expect(button).not.toBeDisabled()
-    fireEvent.press(button)
+      expect(button).not.toBeDisabled()
+      fireEvent.press(button)
 
-    expect(onSaveMock).toHaveBeenCalledWith({
-      address: {
-        city: 'Miami',
-        country: 'United States',
-        line1: 'Coconut Grove',
-        line2: undefined,
-        postalCode: undefined,
-        state: undefined,
-      },
+      expect(onSaveMock).toHaveBeenCalledWith({
+        address: {
+          city: 'Miami',
+          country: 'United States',
+          line1: 'Coconut Grove',
+          line2: undefined,
+          postalCode: undefined,
+          state: undefined,
+        },
+      })
+    })
+
+    it('renders validation errors if the button has no disabled prop', () => {
+      render(
+        <CustomOptionsContext.Provider
+          value={{
+            renderPrimaryButton: (onPress, _name, isSubmitting) => (
+              <Button
+                title={isSubmitting ? 'Loading...' : 'Submit'}
+                onPress={onPress}
+              />
+            ),
+          }}
+        >
+          <AddressForm
+            onSubmit={onSaveMock}
+            porting={{ ...porting, address: null }}
+          />
+        </CustomOptionsContext.Provider>
+      )
+
+      const button = screen.getByText('Submit')
+      expect(button).toBeOnTheScreen()
+      expect(button).not.toBeDisabled()
+
+      const streetInput = screen.getByText('Street Address')
+      fireEvent.changeText(streetInput, 'Coconut Grove')
+      const cityInput = screen.getByText('City')
+      fireEvent.changeText(cityInput, 'Miami')
+
+      fireEvent.press(button)
+
+      const error = screen.getByText('Country is required.')
+
+      expect(onSaveMock).not.toHaveBeenCalled()
+      expect(error).toBeOnTheScreen()
     })
   })
+
   it('uses the custom porting instructions button if present', async () => {
     const placeholders: Record<string, string> = {
       portingInfoLink: 'Porting instructions',

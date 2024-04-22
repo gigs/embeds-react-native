@@ -190,41 +190,77 @@ describe('AccountHolderForm', () => {
       })
     )
   })
-  it('uses the custom button if present', async () => {
-    render(
-      <CustomOptionsContext.Provider
-        value={{
-          renderPrimaryButton: (onPress, _name, isSubmitting, disabled) => (
-            <Button
-              title={isSubmitting ? 'Loading...' : 'Submit'}
-              onPress={onPress}
-              disabled={disabled}
-            />
-          ),
-        }}
-      >
-        <AccountHolderForm
-          onSubmit={onSaveMock}
-          porting={{ ...porting, firstName: null, lastName: null }}
-        />
-      </CustomOptionsContext.Provider>
-    )
+  describe('with a custom primary button', () => {
+    it('uses the custom button', async () => {
+      render(
+        <CustomOptionsContext.Provider
+          value={{
+            renderPrimaryButton: (onPress, _name, isSubmitting, disabled) => (
+              <Button
+                title={isSubmitting ? 'Loading...' : 'Submit'}
+                onPress={onPress}
+                disabled={disabled}
+              />
+            ),
+          }}
+        >
+          <AccountHolderForm
+            onSubmit={onSaveMock}
+            porting={{ ...porting, firstName: null, lastName: null }}
+          />
+        </CustomOptionsContext.Provider>
+      )
 
-    const button = screen.getByText('Submit')
-    expect(button).toBeOnTheScreen()
-    expect(button).toBeDisabled()
+      const button = screen.getByText('Submit')
+      expect(button).toBeOnTheScreen()
+      expect(button).toBeDisabled()
 
-    const firstNameInput = screen.getByText('Account Holder’s First Name')
-    fireEvent.changeText(firstNameInput, 'Jeffrey')
-    const lastNameInput = screen.getByText('Account Holder’s Last Name')
-    fireEvent.changeText(lastNameInput, 'Seinfeld')
+      const firstNameInput = screen.getByText('Account Holder’s First Name')
+      fireEvent.changeText(firstNameInput, 'Jeffrey')
+      const lastNameInput = screen.getByText('Account Holder’s Last Name')
+      fireEvent.changeText(lastNameInput, 'Seinfeld')
 
-    expect(button).not.toBeDisabled()
-    fireEvent.press(button)
+      expect(button).not.toBeDisabled()
+      fireEvent.press(button)
 
-    expect(onSaveMock).toHaveBeenCalledWith({
-      firstName: 'Jeffrey',
-      lastName: 'Seinfeld',
+      expect(onSaveMock).toHaveBeenCalledWith({
+        firstName: 'Jeffrey',
+        lastName: 'Seinfeld',
+      })
+    })
+
+    it('renders validation errors if the button has no disabled prop', () => {
+      render(
+        <CustomOptionsContext.Provider
+          value={{
+            renderPrimaryButton: (onPress, _name, isSubmitting) => (
+              <Button
+                title={isSubmitting ? 'Loading...' : 'Submit'}
+                onPress={onPress}
+              />
+            ),
+          }}
+        >
+          <AccountHolderForm
+            onSubmit={onSaveMock}
+            porting={{ ...porting, firstName: null, lastName: null }}
+          />
+        </CustomOptionsContext.Provider>
+      )
+
+      const button = screen.getByText('Submit')
+      expect(button).toBeOnTheScreen()
+      expect(button).not.toBeDisabled()
+
+      const firstNameInput = screen.getByText('Account Holder’s First Name')
+      fireEvent.changeText(firstNameInput, 'Jeffrey')
+
+      fireEvent.press(button)
+
+      const error = screen.getByText('Account Holder’s Last Name is required.')
+
+      expect(onSaveMock).not.toHaveBeenCalled()
+      expect(error).toBeOnTheScreen()
     })
   })
   it('uses the custom porting instructions button if present', async () => {

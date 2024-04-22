@@ -1,11 +1,35 @@
 import React, { useState } from 'react'
 import { View } from 'react-native'
+import { z } from 'zod'
+import { ZodError } from 'zod'
 
 import { Porting } from '../../../../types/porting'
 import { AlertBanner } from '../../../components/AlertBanner'
 import { EmbedButton } from '../../../components/EmbedButton'
 import { declinedPortingRequiresAddress } from '../../util/portingUtils'
 import { AddressInfo } from './AddressInfo'
+
+const schema = z.object({
+  address: z.object({
+    line1: z
+      .string()
+      .trim()
+      .min(1, 'Line 1 is required')
+      .max(35, 'Line 1 must not exceed 35 characters')
+      .optional(),
+    line2: z
+      .string()
+      .trim()
+      .max(35, 'Must not exceed 35 characters')
+      .optional()
+      .transform((line2) => line2 || null)
+      .nullable(),
+    city: z.string().trim().min(1, 'City is required').optional(),
+    postalCode: z.string().trim().optional(),
+    state: z.string().nullable().optional(),
+    country: z.string().trim().min(1, 'Country is required').optional(),
+  }),
+})
 
 type AddressFormProps = {
   porting: Porting
@@ -40,8 +64,20 @@ export function AddressForm({
     },
   })
 
+  const [validationErrors, setValidationErrors] = useState<string | null>(null)
+
   function handleSave() {
-    onSubmit(formData)
+    try {
+      schema.parse(formData)
+      onSubmit(formData)
+    } catch (err) {
+      if (err instanceof ZodError) {
+        const errorsToDisplay = err.errors.map((e) => e.message)
+        console.log(err)
+
+        setValidationErrors(`${errorsToDisplay.join('. ')}.`)
+      }
+    }
   }
 
   const isValid =
@@ -52,6 +88,9 @@ export function AddressForm({
   return (
     <View>
       {error && <AlertBanner variant="error" message={error} />}
+      {validationErrors && (
+        <AlertBanner variant="error" message={validationErrors} />
+      )}
       <AddressInfo
         onChangeAddressLine1={(line1) =>
           setFormData((prev) => ({
