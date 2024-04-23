@@ -1,11 +1,17 @@
 import React, { useState } from 'react'
 import { View } from 'react-native'
+import { z, ZodError } from 'zod'
 
 import { Porting } from '../../../../types/porting'
 import { AlertBanner } from '../../../components/AlertBanner'
 import { EmbedButton } from '../../../components/EmbedButton'
 import { declinedPortingRequiresCarrierInfo } from '../../util/portingUtils'
 import { CarrierDetailsInfo } from './CarrierDetailsInfo'
+
+const schema = z.object({
+  accountNumber: z.string().trim().min(1, 'Account Number is required'),
+  accountPin: z.string().trim().min(1, 'Number Transfer PIN is required'),
+})
 
 type CarrierInfoFormProps = {
   porting: Porting
@@ -25,8 +31,20 @@ export function CarrierInfoForm({
     accountPin: '',
   })
 
+  const [validationErrors, setValidationErrors] = useState<string | null>(null)
+
   function handleSave() {
-    onSubmit(formData)
+    try {
+      schema.parse(formData)
+      onSubmit(formData)
+    } catch (err) {
+      if (err instanceof ZodError) {
+        const errorsToDisplay = err.errors.map((e) => e.message)
+        setValidationErrors(`${errorsToDisplay.join('. ')}.`)
+      } else {
+        throw err
+      }
+    }
   }
 
   const isValid =
@@ -35,6 +53,9 @@ export function CarrierInfoForm({
   return (
     <View>
       {error && <AlertBanner variant="error" message={error} />}
+      {validationErrors && (
+        <AlertBanner variant="error" message={validationErrors} />
+      )}
       <CarrierDetailsInfo
         onChangeAccountNumber={(accountNumber) =>
           setFormData((prev) => ({

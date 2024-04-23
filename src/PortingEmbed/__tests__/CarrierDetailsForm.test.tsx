@@ -123,43 +123,82 @@ describe('CarrierInfoForm', () => {
     expect(numberInput).toBeOnTheScreen()
     expect(pinInput).toBeOnTheScreen()
   })
-  it('uses the custom button if present', async () => {
-    render(
-      <CustomOptionsContext.Provider
-        value={{
-          renderPrimaryButton: (onPress, _name, isSubmitting, disabled) => (
-            <Button
-              title={isSubmitting ? 'Loading...' : 'Submit'}
-              onPress={onPress}
-              disabled={disabled}
-            />
-          ),
-        }}
-      >
-        <CarrierInfoForm
-          onSubmit={onSaveMock}
-          porting={{ ...porting, address: null }}
-        />
-      </CustomOptionsContext.Provider>
-    )
 
-    const button = screen.getByText('Submit')
-    expect(button).toBeOnTheScreen()
-    expect(button).toBeDisabled()
+  describe('with a custom primary button', () => {
+    it('uses the custom button', async () => {
+      render(
+        <CustomOptionsContext.Provider
+          value={{
+            renderPrimaryButton: (onPress, _name, isSubmitting, disabled) => (
+              <Button
+                title={isSubmitting ? 'Loading...' : 'Submit'}
+                onPress={onPress}
+                disabled={disabled}
+              />
+            ),
+          }}
+        >
+          <CarrierInfoForm
+            onSubmit={onSaveMock}
+            porting={{ ...porting, address: null }}
+          />
+        </CustomOptionsContext.Provider>
+      )
 
-    const numberInput = screen.getByText('Account Number')
-    fireEvent.changeText(numberInput, '123456')
-    const pinInput = screen.getByText('Number Transfer PIN')
-    fireEvent.changeText(pinInput, '1234')
+      const button = screen.getByText('Submit')
+      expect(button).toBeOnTheScreen()
+      expect(button).toBeDisabled()
 
-    expect(button).not.toBeDisabled()
-    fireEvent.press(button)
+      const numberInput = screen.getByText('Account Number')
+      fireEvent.changeText(numberInput, '123456')
+      const pinInput = screen.getByText('Number Transfer PIN')
+      fireEvent.changeText(pinInput, '1234')
 
-    expect(onSaveMock).toHaveBeenCalledWith({
-      accountNumber: '123456',
-      accountPin: '1234',
+      expect(button).not.toBeDisabled()
+      fireEvent.press(button)
+
+      expect(onSaveMock).toHaveBeenCalledWith({
+        accountNumber: '123456',
+        accountPin: '1234',
+      })
+    })
+
+    it('renders validation errors if the button has no disabled prop', () => {
+      render(
+        <CustomOptionsContext.Provider
+          value={{
+            renderPrimaryButton: (onPress, _name, isSubmitting) => (
+              <Button
+                title={isSubmitting ? 'Loading...' : 'Submit'}
+                onPress={onPress}
+              />
+            ),
+          }}
+        >
+          <CarrierInfoForm
+            onSubmit={onSaveMock}
+            porting={{ ...porting, address: null }}
+          />
+        </CustomOptionsContext.Provider>
+      )
+
+      const button = screen.getByText('Submit')
+      expect(button).toBeOnTheScreen()
+      expect(button).not.toBeDisabled()
+
+      const numberInput = screen.getByText('Account Number')
+      fireEvent.changeText(numberInput, '123456')
+
+      expect(button).not.toBeDisabled()
+      fireEvent.press(button)
+
+      const error = screen.getByText('Number Transfer PIN is required.')
+
+      expect(onSaveMock).not.toHaveBeenCalled()
+      expect(error).toBeOnTheScreen()
     })
   })
+
   it('uses the custom porting instructions button if present', async () => {
     const placeholders: Record<string, string> = {
       portingInfoLink: 'Porting instructions',

@@ -1,10 +1,24 @@
 import React, { useState } from 'react'
 import { View } from 'react-native'
+import { z, ZodError } from 'zod'
 
 import { Porting } from '../../../../types/porting'
 import { AlertBanner } from '../../../components/AlertBanner'
 import { EmbedButton } from '../../../components/EmbedButton'
 import { AccountHolderInfo } from './../../features/AccountHolder/AccountHolderInfo'
+
+const schema = z.object({
+  firstName: z
+    .string()
+    .trim()
+    .min(1, 'Account Holder’s First Name is required'),
+  lastName: z.string().trim().min(1, 'Account Holder’s Last Name is required'),
+  birthday: z
+    .string()
+    .trim()
+    .min(1, 'Account Holder’s Date of Birth is required')
+    .optional(),
+})
 
 type AccountHolderFormProps = {
   porting: Porting
@@ -29,9 +43,22 @@ export function AccountHolderForm({
     birthday: porting.birthday || undefined,
   })
 
+  const [validationErrors, setValidationErrors] = useState<string | null>(null)
+
   function handleSave() {
-    onSubmit(formData)
+    try {
+      schema.parse(formData)
+      onSubmit(formData)
+    } catch (err) {
+      if (err instanceof ZodError) {
+        const errorsToDisplay = err.errors.map((e) => e.message)
+        setValidationErrors(`${errorsToDisplay.join('. ')}.`)
+      } else {
+        throw err
+      }
+    }
   }
+
   const isValid =
     (!porting.required.includes('birthday') ||
       (formData.birthday && formData.birthday?.length > 0)) &&
@@ -41,6 +68,9 @@ export function AccountHolderForm({
   return (
     <View>
       {error && <AlertBanner variant="error" message={error} />}
+      {validationErrors && (
+        <AlertBanner variant="error" message={validationErrors} />
+      )}
       <AccountHolderInfo
         onChangeFirstName={(firstName) =>
           porting.required.includes('firstName') &&
@@ -58,7 +88,6 @@ export function AccountHolderForm({
         }}
         fields={porting.required}
       />
-
       <EmbedButton
         onPress={handleSave}
         isSubmitting={isSubmitting}
