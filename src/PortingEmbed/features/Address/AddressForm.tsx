@@ -19,8 +19,7 @@ const schema = z.object({
       .string()
       .trim()
       .max(35, 'Line 2 must not exceed 35 characters')
-      .optional()
-      .nullable(),
+      .optional(),
     city: z.string().trim().min(1, 'City is required'),
     postalCode: z.string().trim().optional(),
     state: z.string().nullable().optional(),
