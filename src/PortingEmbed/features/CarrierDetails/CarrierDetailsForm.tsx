@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import { View } from 'react-native'
-import { z } from 'zod'
-import { ZodError } from 'zod'
+import { z, ZodError } from 'zod'
 
 import { Porting } from '../../../../types/porting'
 import { AlertBanner } from '../../../components/AlertBanner'
@@ -10,16 +9,8 @@ import { declinedPortingRequiresCarrierInfo } from '../../util/portingUtils'
 import { CarrierDetailsInfo } from './CarrierDetailsInfo'
 
 const schema = z.object({
-  accountNumber: z
-    .string()
-    .trim()
-    .min(1, 'Account Number is required')
-    .optional(),
-  accountPin: z
-    .string()
-    .trim()
-    .min(1, 'Number Transfer PIN is required')
-    .optional(),
+  accountNumber: z.string().trim().min(1, 'Account Number is required'),
+  accountPin: z.string().trim().min(1, 'Number Transfer PIN is required'),
 })
 
 type CarrierInfoFormProps = {
@@ -50,6 +41,8 @@ export function CarrierInfoForm({
       if (err instanceof ZodError) {
         const errorsToDisplay = err.errors.map((e) => e.message)
         setValidationErrors(`${errorsToDisplay.join('. ')}.`)
+      } else {
+        throw err
       }
     }
   }

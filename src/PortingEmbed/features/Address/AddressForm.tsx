@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import { View } from 'react-native'
-import { z } from 'zod'
-import { ZodError } from 'zod'
+import { z, ZodError } from 'zod'
 
 import { Porting } from '../../../../types/porting'
 import { AlertBanner } from '../../../components/AlertBanner'
@@ -15,19 +14,17 @@ const schema = z.object({
       .string()
       .trim()
       .min(1, 'Line 1 is required')
-      .max(35, 'Line 1 must not exceed 35 characters')
-      .optional(),
+      .max(35, 'Line 1 must not exceed 35 characters'),
     line2: z
       .string()
       .trim()
-      .max(35, 'Must not exceed 35 characters')
+      .max(35, 'Line 2 must not exceed 35 characters')
       .optional()
-      .transform((line2) => line2 || null)
       .nullable(),
-    city: z.string().trim().min(1, 'City is required').optional(),
+    city: z.string().trim().min(1, 'City is required'),
     postalCode: z.string().trim().optional(),
     state: z.string().nullable().optional(),
-    country: z.string().trim().min(1, 'Country is required').optional(),
+    country: z.string().trim().min(1, 'Country is required'),
   }),
 })
 
@@ -73,9 +70,9 @@ export function AddressForm({
     } catch (err) {
       if (err instanceof ZodError) {
         const errorsToDisplay = err.errors.map((e) => e.message)
-        console.log(err)
-
         setValidationErrors(`${errorsToDisplay.join('. ')}.`)
+      } else {
+        throw err
       }
     }
   }

@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import { View } from 'react-native'
-import { z } from 'zod'
-import { ZodError } from 'zod'
+import { z, ZodError } from 'zod'
 
 import { Porting } from '../../../../types/porting'
 import { AlertBanner } from '../../../components/AlertBanner'
@@ -12,13 +11,8 @@ const schema = z.object({
   firstName: z
     .string()
     .trim()
-    .min(1, 'Account Holder’s First Name is required')
-    .optional(),
-  lastName: z
-    .string()
-    .trim()
-    .min(1, 'Account Holder’s Last Name is required')
-    .optional(),
+    .min(1, 'Account Holder’s First Name is required'),
+  lastName: z.string().trim().min(1, 'Account Holder’s Last Name is required'),
   birthday: z
     .string()
     .trim()
@@ -59,6 +53,8 @@ export function AccountHolderForm({
       if (err instanceof ZodError) {
         const errorsToDisplay = err.errors.map((e) => e.message)
         setValidationErrors(`${errorsToDisplay.join('. ')}.`)
+      } else {
+        throw err
       }
     }
   }
