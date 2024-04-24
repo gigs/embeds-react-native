@@ -1,3 +1,4 @@
+import { Picker } from '@react-native-picker/picker'
 import { DatePickerInput } from '@tashi-iu/react-native-paper-dates'
 import Checkbox from 'expo-checkbox'
 import { useCallback, useState } from 'react'
@@ -12,7 +13,6 @@ import {
 } from 'react-native'
 
 import { PortingEmbed } from '../../../src'
-import { Picker } from '@react-native-picker/picker'
 import { PortingStep } from '../../../src/PortingEmbed/nextPortingStep'
 
 export default function PortingEmbedScreen() {
