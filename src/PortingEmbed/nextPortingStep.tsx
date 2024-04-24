@@ -10,6 +10,7 @@ import {
 } from './util/portingUtils'
 
 export type PortingStep =
+  | 'donorProvider'
   | 'carrierDetails'
   | 'holderDetails'
   | 'address'
@@ -18,6 +19,9 @@ export type PortingStep =
   | null
 
 export const nextPortingStep = (porting: Porting) => {
+  if (!porting.donorProvider) {
+    return 'donorProvider'
+  }
   if (
     portingRequiresCarrierInfo(porting) ||
     declinedPortingRequiresCarrierInfo(porting)

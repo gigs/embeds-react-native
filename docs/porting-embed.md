@@ -383,3 +383,4 @@ defaultTextFont='Custom-font'
 | `portingInfoLink`             | See Porting instructions    |
 | `protectionDisabling.button`  | Request Porting Again       |
 | `portingDeclined.button`      | Contact Customer support    |
+| `donorProvider.dropdown`      | Donor providers dropdown    |

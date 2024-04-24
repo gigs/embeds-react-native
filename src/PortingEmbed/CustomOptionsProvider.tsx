@@ -4,6 +4,7 @@ import { InputModeOptions } from 'react-native'
 import { PortingStep } from './nextPortingStep'
 
 type EmbedOptions = {
+  onError?: (error: Error) => unknown
   renderTitle?: (step: PortingStep) => React.ReactNode
   renderInput?: (
     name: string,
@@ -30,6 +31,11 @@ type EmbedOptions = {
     onConfirm: () => void
   ) => React.ReactNode
   defaultTextFont?: string
+  renderDropdown?: (
+    name: string,
+    providers: { id: string; name: string }[],
+    onChange: (value: string) => void
+  ) => React.ReactNode
 }
 
 export const CustomOptionsContext = createContext<EmbedOptions | null>(null)
@@ -48,6 +54,8 @@ export function CustomOptionsProvider({
   renderDate,
   renderPortingProtectionDisabledConfirmation,
   defaultTextFont,
+  onError,
+  renderDropdown,
   children,
 }: Props) {
   return (
@@ -62,6 +70,8 @@ export function CustomOptionsProvider({
         renderDate,
         renderPortingProtectionDisabledConfirmation,
         defaultTextFont,
+        onError,
+        renderDropdown,
       }}
     >
       {children}

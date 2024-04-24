@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { Porting } from '../../types/porting'
+import { ServiceProviderList } from '../../types/serviceProvider'
 import { Subscription } from '../../types/subscription'
 import { useSessionContext } from '../core/ConnectSessionProvider'
 
-const baseUrl = `https://api.gigs.com/projects`
+const baseUrlWithProjects = `https://api.gigs.com/projects`
 
 export class ApiError extends Error {}
 
@@ -18,7 +19,7 @@ export function useGetSubscription(subscription: string) {
     try {
       setLoading(true)
       const response = await fetch(
-        `${baseUrl}/${project}/subscriptions/${subscription}`,
+        `${baseUrlWithProjects}/${project}/subscriptions/${subscription}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -68,6 +69,7 @@ export type UpdatePortingValues = {
     state?: string
   }
   donorProviderApproval?: boolean
+  donorProvider?: string
 }
 
 export function useUpdatePorting() {
@@ -75,15 +77,18 @@ export function useUpdatePorting() {
 
   return useCallback(
     async (portingId: string, values: UpdatePortingValues) => {
-      const res = await fetch(`${baseUrl}/${project}/portings/${portingId}`, {
-        method: 'PATCH',
-        headers: {
-          accept: 'application/json',
-          'content-type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(values),
-      })
+      const res = await fetch(
+        `${baseUrlWithProjects}/${project}/portings/${portingId}`,
+        {
+          method: 'PATCH',
+          headers: {
+            accept: 'application/json',
+            'content-type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(values),
+        }
+      )
 
       if (!res.ok) {
         const body = await res
@@ -98,4 +103,44 @@ export function useUpdatePorting() {
     },
     [project, token]
   )
+}
+
+export const useGetServiceProviders = (recipientProvider: string) => {
+  const { token } = useSessionContext()
+
+  const [error, setError] = useState<Error | null>(null)
+  const [data, setData] = useState<null | ServiceProviderList>(null)
+
+  const getServiceProviders = useCallback(async () => {
+    try {
+      const res = await fetch(
+        `https://api.gigs.com/serviceProviders?recipientProvider=${recipientProvider}`,
+        {
+          method: 'GET',
+          headers: {
+            accept: 'application/json',
+            'content-type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      if (res.status === 404) {
+        setError(new Error('Service Providers not found.'))
+      }
+      const serviceProviderData = (await res.json()) as ServiceProviderList
+      setData(serviceProviderData)
+    } catch (e) {
+      if (e instanceof ApiError) {
+        setError(e)
+      } else {
+        setError(new Error('Something went wrong'))
+      }
+    }
+  }, [token, recipientProvider])
+
+  useEffect(() => {
+    getServiceProviders()
+  }, [getServiceProviders])
+
+  return useMemo(() => ({ error, data }), [error, data])
 }

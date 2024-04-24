@@ -12,6 +12,7 @@ import {
 } from 'react-native'
 
 import { PortingEmbed } from '../../../src'
+import { Picker } from '@react-native-picker/picker'
 import { PortingStep } from '../../../src/PortingEmbed/nextPortingStep'
 
 export default function PortingEmbedScreen() {
@@ -23,6 +24,9 @@ export default function PortingEmbedScreen() {
   const [portingStep, setPortingStep] = useState<PortingStep>()
   const [isChecked, setChecked] = useState(false)
   const [date, setDate] = useState<Date | undefined>(new Date())
+  const [currentProvider, setCurrentProvider] = useState<string | undefined>(
+    undefined
+  )
 
   function handleSubmit() {
     setConnectSession(JSON.parse(sessionJson))
@@ -68,6 +72,8 @@ export default function PortingEmbedScreen() {
     portingInfoLink: 'See Porting instructions',
     'protectionDisabling.button': 'Request Porting Again',
     'portingDeclined.button': 'Contact Customer support',
+    donorProvider: 'Current provider',
+    'donorProvider.dropdown': 'Select your current provider',
   }
 
   return (
@@ -234,6 +240,19 @@ export default function PortingEmbedScreen() {
               </Text>
               <Button title={'Confirm'} onPress={onConfirm} color={'blue'} />
             </View>
+          )}
+          renderDropdown={(name, providers, onChange) => (
+            <Picker
+              selectedValue={currentProvider}
+              onValueChange={(itemValue, _itemIndex) => {
+                onChange(itemValue as string)
+                setCurrentProvider(itemValue)
+              }}
+            >
+              {providers.map((p) => {
+                return <Picker.Item key={p.id} label={p.name} value={p.id} />
+              })}
+            </Picker>
           )}
         />
       )}
