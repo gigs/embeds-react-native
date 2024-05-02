@@ -39,11 +39,14 @@ describe('DonorProviderForm', () => {
         />
       </ConnectSessionContext.Provider>
     )
+    let button
     await waitFor(() => {
-      const button = screen.getByText('Save')
+      expect((button = screen.getByText('Save'))).toBeOnTheScreen()
+    })
+    expect(button).toBeDisabled()
+    fireEvent.press(button)
 
-      expect(button).toBeDisabled()
-      fireEvent.press(button)
+    await waitFor(() => {
       expect(onSaveMock).not.toHaveBeenCalled()
     })
   })
@@ -70,19 +73,21 @@ describe('DonorProviderForm', () => {
         />
       </ConnectSessionContext.Provider>
     )
+    let dropdown
     await waitFor(() => {
-      const dropdown = screen.getByText('Current Carrier')
-      fireEvent.press(dropdown)
-
-      const provider = screen.getByText('AT&T')
-      fireEvent.press(provider)
-
-      const button = screen.getByText('Save')
-
-      expect(button).not.toBeDisabled()
-      fireEvent.press(button)
-      expect(onSaveMock).toHaveBeenCalled()
+      expect((dropdown = screen.getByText('Current Carrier'))).toBeOnTheScreen()
     })
+
+    fireEvent.press(dropdown)
+
+    const provider = screen.getByText('AT&T')
+    fireEvent.press(provider)
+
+    const button = screen.getByText('Save')
+
+    expect(button).not.toBeDisabled()
+    fireEvent.press(button)
+    expect(onSaveMock).toHaveBeenCalled()
   })
   it('renders validation errors if the button has no disabled prop', async () => {
     render(
@@ -120,15 +125,17 @@ describe('DonorProviderForm', () => {
     )
 
     await waitFor(() => {
-      const button = screen.getByText('Submit')
-      expect(button).toBeOnTheScreen()
-      expect(button).not.toBeDisabled()
-      fireEvent.press(button)
-
-      const error = screen.getByText('Please select an option.')
-
-      expect(onSaveMock).not.toHaveBeenCalled()
-      expect(error).toBeOnTheScreen()
+      expect(screen.getByText('Submit')).toBeOnTheScreen()
     })
+
+    const button = screen.getByText('Submit')
+    expect(button).toBeOnTheScreen()
+    expect(button).not.toBeDisabled()
+    fireEvent.press(button)
+
+    const error = screen.getByText('Please select an option.')
+
+    expect(onSaveMock).not.toHaveBeenCalled()
+    expect(error).toBeOnTheScreen()
   })
 })
