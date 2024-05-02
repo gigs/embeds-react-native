@@ -123,6 +123,8 @@ export function PortingFormContainer({
         <DonorProviderForm
           onSubmit={handleSubmit}
           porting={subscription.porting}
+          isSubmitting={isSubmitting}
+          error={portingUpdateError}
         />
       )}
       {portingStep === 'carrierDetails' && (
