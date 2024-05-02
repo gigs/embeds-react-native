@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import {
   FlatList,
   Modal,
@@ -35,11 +35,6 @@ export const Dropdown = ({ label, options, onSelect }: DropdownProps) => {
     onSelect(value)
     toggleDropdown()
   }
-
-  useEffect(() => {
-    onSelect('')
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
 
   return (
     <>
