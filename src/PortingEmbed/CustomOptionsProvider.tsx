@@ -31,7 +31,7 @@ type EmbedOptions = {
     onConfirm: () => void
   ) => React.ReactNode
   defaultTextFont?: string
-  renderDropdown?: (
+  renderProvidersDropdown?: (
     name: string,
     providers: { id: string; name: string }[],
     onChange: (value: string) => void
@@ -55,7 +55,7 @@ export function CustomOptionsProvider({
   renderPortingProtectionDisabledConfirmation,
   defaultTextFont,
   onError,
-  renderDropdown,
+  renderProvidersDropdown,
   children,
 }: Props) {
   return (
@@ -71,7 +71,7 @@ export function CustomOptionsProvider({
         renderPortingProtectionDisabledConfirmation,
         defaultTextFont,
         onError,
-        renderDropdown,
+        renderProvidersDropdown,
       }}
     >
       {children}

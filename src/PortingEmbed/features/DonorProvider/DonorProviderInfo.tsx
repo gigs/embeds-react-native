@@ -23,8 +23,8 @@ export function DonorProviderInfo({ onChangeProvider, providers }: Props) {
       {options?.renderTitle?.('donorProvider')}
 
       <View>
-        {options?.renderDropdown ? (
-          options?.renderDropdown?.(
+        {options?.renderProvidersDropdown ? (
+          options?.renderProvidersDropdown?.(
             'donorProvider.dropdown',
             providers,
             onChangeProvider

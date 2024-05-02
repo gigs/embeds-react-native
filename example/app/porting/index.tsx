@@ -241,7 +241,7 @@ export default function PortingEmbedScreen() {
               <Button title={'Confirm'} onPress={onConfirm} color={'blue'} />
             </View>
           )}
-          renderDropdown={(name, providers, onChange) => (
+          renderProvidersDropdown={(name, providers, onChange) => (
             <Picker
               selectedValue={currentProvider}
               onValueChange={(itemValue, _itemIndex) => {
