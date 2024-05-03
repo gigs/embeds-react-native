@@ -26,6 +26,21 @@ export const handlers = [
       },
     })
   }),
+  http.get('https://api.gigs.com/serviceProviders', () => {
+    return HttpResponse.json({
+      object: 'list',
+      items: [
+        {
+          object: 'serviceProvider',
+          id: 'svp_0SNlurA01K6GY5L0XJffY8',
+          name: 'AT&T',
+          recipientProviders: ['p3'],
+        },
+      ],
+      moreItemsAfter: null,
+      moreItemsBefore: null,
+    })
+  }),
 ]
 
 export const server = setupServer(...handlers)

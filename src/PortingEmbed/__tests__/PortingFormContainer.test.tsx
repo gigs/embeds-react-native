@@ -160,10 +160,10 @@ describe('PortingFormContainer', () => {
         expect(
           screen.getByText('Confirm your number is not port protected anymore.')
         ).toBeOnTheScreen()
-
-        const button = screen.getByText('Confirm')
-        expect(button).toBeOnTheScreen()
       })
+
+      const button = screen.getByText('Confirm')
+      expect(button).toBeOnTheScreen()
     })
   })
   describe('when the porting is declined with portingAccountNumberRequiredOrInvalid code', () => {

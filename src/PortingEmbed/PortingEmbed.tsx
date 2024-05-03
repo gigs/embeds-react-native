@@ -42,6 +42,11 @@ type Props = {
     onConfirm: () => void
   ) => React.ReactNode
   defaultTextFont?: string
+  renderProvidersDropdown?: (
+    name: string,
+    providers: { id: string; name: string }[],
+    onChange: (value: string) => void
+  ) => React.ReactNode
 }
 
 export function PortingEmbed({
@@ -62,6 +67,7 @@ export function PortingEmbed({
   renderDate,
   renderPortingProtectionDisabledConfirmation,
   defaultTextFont,
+  renderProvidersDropdown,
 }: Props) {
   return (
     <ConnectSessionProvider
@@ -83,6 +89,7 @@ export function PortingEmbed({
           renderPortingProtectionDisabledConfirmation
         }
         defaultTextFont={defaultTextFont}
+        renderProvidersDropdown={renderProvidersDropdown}
       >
         <PortingFormContainer
           onLoaded={onLoaded}

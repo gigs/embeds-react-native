@@ -337,6 +337,38 @@ The default font that the embed uses for all default components, i.e. all compon
 defaultTextFont='Custom-font'
 />
 ```
+#### `renderProvidersDropdown`
+
+Render prop function that can be used to customize the rendering of a component to select the current carrier.
+If no `renderProvidersDropdown` prop is passed to the component, a default component is displayed instead.
+
+`name` - The name of the dropdown.
+`providers` - List of IDs and names of providers.
+`onChange` - Function to handle carrier ID value changes.
+
+```jsx
+  const titles: Record<string, string> = {
+    'donorProvider.dropdown': 'Select your current carrier',
+  }
+
+<PortingEmbed
+//...
+renderProvidersDropdown={(name, providers, onChange) => (
+            <Picker
+              selectedValue={currentProvider}
+              onValueChange={(itemValue, _itemIndex) => {
+                onChange(itemValue as string)
+                setCurrentProvider(itemValue)
+              }}
+              placeholder={titles[name]}
+            >
+              {providers.map((p) => {
+                return <Picker.Item key={p.id} label={p.name} value={p.id} />
+              })}
+            </Picker>
+          )}
+/>
+```
 
 #### Porting Embed props
 
@@ -357,6 +389,7 @@ defaultTextFont='Custom-font'
 | `renderAlertBanner`        | function               | ❌       | `(variant: 'error' | 'info', message: string) => React.ReactNode` |
 | `renderDate`        | function               | ❌       | `(name: string, onChange: (value: string) => void) => React.ReactNode` |
 | `renderPortingProtectionDisabledConfirmation`        | function               | ❌       | `(onConfirm: () => void) => React.ReactNode` |
+| `renderProvidersDropdown`        | function               | ❌       | `(name: string, providers: {id: string; name: string;}[], onChange: (value: string) => void) => React.ReactNode` |
 | `defaultTextFont`        | string               | ❌       | Custom font used in all default components. |
 
 #### Text
@@ -383,3 +416,5 @@ defaultTextFont='Custom-font'
 | `portingInfoLink`             | See Porting instructions    |
 | `protectionDisabling.button`  | Request Porting Again       |
 | `portingDeclined.button`      | Contact Customer support    |
+| `donorProvider`               | N/A                         |
+| `donorProvider.dropdown`      | Donor providers dropdown    |
