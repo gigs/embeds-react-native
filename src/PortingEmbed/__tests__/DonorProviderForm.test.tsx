@@ -39,10 +39,8 @@ describe('DonorProviderForm', () => {
         />
       </ConnectSessionContext.Provider>
     )
-    let button
-    await waitFor(() => {
-      expect((button = screen.getByText('Save'))).toBeOnTheScreen()
-    })
+    const button = await screen.findByText('Save')
+
     expect(button).toBeDisabled()
     fireEvent.press(button)
 
@@ -73,10 +71,8 @@ describe('DonorProviderForm', () => {
         />
       </ConnectSessionContext.Provider>
     )
-    let dropdown
-    await waitFor(() => {
-      expect((dropdown = screen.getByText('Current Carrier'))).toBeOnTheScreen()
-    })
+    const dropdown = await screen.findByText('Current Carrier')
+    expect(dropdown).toBeOnTheScreen()
 
     fireEvent.press(dropdown)
 
@@ -124,11 +120,8 @@ describe('DonorProviderForm', () => {
       </ConnectSessionContext.Provider>
     )
 
-    await waitFor(() => {
-      expect(screen.getByText('Submit')).toBeOnTheScreen()
-    })
+    const button = await screen.findByText('Submit')
 
-    const button = screen.getByText('Submit')
     expect(button).toBeOnTheScreen()
     expect(button).not.toBeDisabled()
     fireEvent.press(button)
