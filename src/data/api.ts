@@ -114,7 +114,7 @@ export const useGetServiceProviders = (recipientProvider: string) => {
   const getServiceProviders = useCallback(async () => {
     try {
       const res = await fetch(
-        `https://api.gigs.com/serviceProviders?recipientProvider=${recipientProvider}`,
+        `https://api.gigs.com/serviceProviders?limit=200&recipientProvider=${recipientProvider}`,
         {
           method: 'GET',
           headers: {
