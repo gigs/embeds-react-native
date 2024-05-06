@@ -1,15 +1,15 @@
 import React, { ReactNode } from 'react'
-import { Pressable, PressableProps } from 'react-native'
+import { TouchableOpacity, TouchableOpacityProps } from 'react-native'
 
 import { EmbedText } from './EmbedText'
 
 type Props = {
   children: ReactNode
-} & PressableProps
+} & TouchableOpacityProps
 
 export function EmbedTextButton({ children, ...rest }: Props) {
   return (
-    <Pressable {...rest}>
+    <TouchableOpacity {...rest}>
       <EmbedText
         style={[
           {
@@ -22,6 +22,6 @@ export function EmbedTextButton({ children, ...rest }: Props) {
       >
         {children}
       </EmbedText>
-    </Pressable>
+    </TouchableOpacity>
   )
 }

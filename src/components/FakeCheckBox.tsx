@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Pressable, StyleSheet, View } from 'react-native'
+import { StyleSheet, TouchableOpacity, View } from 'react-native'
 
 import { EmbedText } from './EmbedText'
 
@@ -17,10 +17,10 @@ export function FakeCheckBox({ onChecked, label }: CheckboxProps) {
   }
 
   return (
-    <Pressable onPress={toggleCheckbox} style={[styles.container]}>
+    <TouchableOpacity onPress={toggleCheckbox} style={[styles.container]}>
       <View style={[styles.checkbox, checked ? styles.checked : null]} />
       <EmbedText style={[{ fontSize: 16, marginLeft: 12 }]}>{label}</EmbedText>
-    </Pressable>
+    </TouchableOpacity>
   )
 }
 
