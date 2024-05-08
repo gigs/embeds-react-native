@@ -4,11 +4,11 @@ import Checkbox from 'expo-checkbox'
 import { useCallback, useState } from 'react'
 import {
   Button,
-  Pressable,
   ScrollView,
   StyleSheet,
   Text,
   TextInput,
+  TouchableOpacity,
   View,
 } from 'react-native'
 
@@ -171,7 +171,7 @@ export default function PortingEmbedScreen() {
             )
           }}
           renderSecondaryButton={(name, onPress) => (
-            <Pressable onPress={onPress}>
+            <TouchableOpacity onPress={onPress}>
               <Text
                 style={[
                   {
@@ -185,7 +185,7 @@ export default function PortingEmbedScreen() {
               >
                 {titles[name]}
               </Text>
-            </Pressable>
+            </TouchableOpacity>
           )}
           renderAlertBanner={(variant, message) => (
             <View

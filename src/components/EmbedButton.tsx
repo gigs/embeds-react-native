@@ -1,5 +1,5 @@
 import React from 'react'
-import { Pressable, PressableProps } from 'react-native'
+import { TouchableOpacity, TouchableOpacityProps } from 'react-native'
 
 import { useOptionsContext } from '../PortingEmbed/CustomOptionsProvider'
 import { EmbedText } from './EmbedText'
@@ -9,7 +9,7 @@ type Props = {
   disabled?: boolean
   isSubmitting?: boolean
   name?: string
-} & PressableProps
+} & TouchableOpacityProps
 
 export function EmbedButton({
   onPress,
@@ -23,7 +23,7 @@ export function EmbedButton({
   return options?.renderPrimaryButton ? (
     options.renderPrimaryButton(onPress, name, isSubmitting, disabled)
   ) : (
-    <Pressable
+    <TouchableOpacity
       disabled={disabled}
       style={[
         {
@@ -32,6 +32,7 @@ export function EmbedButton({
           padding: 12,
         },
       ]}
+      onPress={onPress}
       {...rest}
     >
       <EmbedText
@@ -46,6 +47,6 @@ export function EmbedButton({
       >
         {name}
       </EmbedText>
-    </Pressable>
+    </TouchableOpacity>
   )
 }
