@@ -44,7 +44,7 @@ describe('PortingFormContainer', () => {
             token: '123445',
           }}
         >
-          <PortingFormContainer onCompleted={jest.fn()} />
+          <PortingFormContainer onCompleted={jest.fn()} onError={jest.fn()} />
         </ConnectSessionContext.Provider>
       )
       await waitFor(() => {
@@ -72,6 +72,7 @@ describe('PortingFormContainer', () => {
         >
           <PortingFormContainer
             onCompleted={jest.fn()}
+            onError={jest.fn()}
             onPortingStep={(portingStep) => onPortingStep(portingStep)}
           />
         </ConnectSessionContext.Provider>
@@ -116,7 +117,7 @@ describe('PortingFormContainer', () => {
             token: '1234',
           }}
         >
-          <PortingFormContainer onCompleted={jest.fn()} />
+          <PortingFormContainer onCompleted={jest.fn()} onError={jest.fn()} />
         </ConnectSessionContext.Provider>
       )
       await waitFor(() => {
@@ -150,9 +151,10 @@ describe('PortingFormContainer', () => {
                   <Button title={'Confirm'} onPress={onConfirm} />
                 </View>
               ),
+              onError: () => jest.fn,
             }}
           >
-            <PortingFormContainer onCompleted={jest.fn()} />
+            <PortingFormContainer onCompleted={jest.fn()} onError={jest.fn()} />
           </CustomOptionsContext.Provider>
         </ConnectSessionContext.Provider>
       )
@@ -200,7 +202,7 @@ describe('PortingFormContainer', () => {
             token: '1234',
           }}
         >
-          <PortingFormContainer onCompleted={jest.fn()} />
+          <PortingFormContainer onCompleted={jest.fn()} onError={jest.fn()} />
         </ConnectSessionContext.Provider>
       )
       await waitFor(() => {
@@ -242,7 +244,7 @@ describe('PortingFormContainer', () => {
             token: '1234',
           }}
         >
-          <PortingFormContainer onCompleted={jest.fn()} />
+          <PortingFormContainer onCompleted={jest.fn()} onError={jest.fn()} />
         </ConnectSessionContext.Provider>
       )
 
@@ -285,7 +287,7 @@ describe('PortingFormContainer', () => {
             token: '1234',
           }}
         >
-          <PortingFormContainer onCompleted={jest.fn()} />
+          <PortingFormContainer onCompleted={jest.fn()} onError={jest.fn()} />
         </ConnectSessionContext.Provider>
       )
 
@@ -328,7 +330,7 @@ describe('PortingFormContainer', () => {
             token: '1234',
           }}
         >
-          <PortingFormContainer onCompleted={jest.fn()} />
+          <PortingFormContainer onCompleted={jest.fn()} onError={jest.fn()} />
         </ConnectSessionContext.Provider>
       )
 
@@ -341,12 +343,13 @@ describe('PortingFormContainer', () => {
     beforeEach(() => {
       server.use(
         http.get(
-          'https://api.gigs.com/projects/dev/subscriptions/sub_456',
+          'https://api.gigs.com/projects/dev/subscriptions/sub_555',
           () => {
             return HttpResponse.json({
-              id: 'sub_456',
+              id: 'sub_555',
               porting: {
                 ...porting,
+                status: 'declined',
                 declinedCode: 'portingUserInformationMismatch',
               },
             })
@@ -354,7 +357,8 @@ describe('PortingFormContainer', () => {
         )
       )
     })
-    it('prompts the user to contact customer support', async () => {
+    it('triggers onError', async () => {
+      const onError = jest.fn()
       render(
         <ConnectSessionContext.Provider
           value={{
@@ -362,7 +366,7 @@ describe('PortingFormContainer', () => {
               ...connectSession,
               intent: {
                 completePorting: {
-                  subscription: 'sub_456',
+                  subscription: 'sub_555',
                 },
                 type: 'completePorting',
               },
@@ -371,16 +375,20 @@ describe('PortingFormContainer', () => {
             token: '1234',
           }}
         >
-          <PortingFormContainer onCompleted={jest.fn()} />
+          <PortingFormContainer onCompleted={jest.fn()} onError={onError} />
         </ConnectSessionContext.Provider>
       )
 
       await waitFor(() => {
-        expect(
-          screen.getByText(
-            'The porting was declined. Please reach out to Customer Support.'
-          )
-        ).toBeOnTheScreen()
+        expect(onError).toBeCalledWith(
+          undefined,
+          {
+            ...porting,
+            status: 'declined',
+            declinedCode: 'portingUserInformationMismatch',
+          },
+          'portingDeclined'
+        )
       })
     })
   })
@@ -416,7 +424,7 @@ describe('PortingFormContainer', () => {
             token: '1234',
           }}
         >
-          <PortingFormContainer onCompleted={onCompleted} />
+          <PortingFormContainer onCompleted={onCompleted} onError={jest.fn()} />
         </ConnectSessionContext.Provider>
       )
       await waitFor(() => {
@@ -444,6 +452,7 @@ describe('PortingFormContainer', () => {
         >
           <PortingFormContainer
             onCompleted={jest.fn()}
+            onError={jest.fn()}
             onPortingStep={(portingStep) => onPortingStep(portingStep)}
           />
         </ConnectSessionContext.Provider>

@@ -23,7 +23,7 @@ type Props = {
   connectSession: unknown
   children: React.ReactNode
   onInitialized?: () => unknown
-  onError?: (error: Error) => unknown
+  onError: (error: Error) => unknown
 }
 
 export function ConnectSessionProvider({
@@ -87,7 +87,7 @@ export function ConnectSessionProvider({
       } catch (error) {
         setStatus('error')
         console.error(error)
-        onError?.(
+        onError(
           error instanceof Error
             ? error
             : new Error(error?.toString() || 'Unexpected error')

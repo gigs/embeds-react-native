@@ -51,12 +51,16 @@ The ID of your Gigs Project.
 Callback triggered when the number porting is completed.
 `porting` - The whole porting object.
 
-### Optional props
-
 #### `onError`
 
-`(error:  Error)  =>  unknown`
-Callback triggered when there is an error initializing the porting form. The error may stem from an invalid session, in which case recovery can be attempted by generating and passing a new Connect session to the embed. Alternatively, the error may derive from a failed attempt to retrieve a subscription, in which case it is advisable to inform the user to try again later or to contact customer support for assistance.
+`(error?:  Error, porting?: Porting, errorCode?: PortingEmbedError)  =>  unknown`
+
+Callback triggered when: 
+* There is an error initializing the porting form. The error may stem from an invalid session, in which case recovery can be attempted by generating and passing a new Connect session to the embed. The `error` is passed as an argument to the callback.
+* There is a failed attempt to retrieve a subscription. In this case it is advisable to inform the user to try again later or to contact customer support for assistance. The `error` is passed as an argument to the callback.
+* The porting has been declined. The `porting` object and the error code `portingDeclined` are passed as arguments to the callback. 
+
+### Optional props
 
 #### `onInitialized`
 
@@ -210,7 +214,6 @@ Returns a React node representing the customized secondary button component.
 ```jsx
   const titles: Record<string, string> = {
     'protectionDisabling.button': 'Request Porting Again',
-    'portingDeclined.button': 'Contact Customer support',
   }
 
 <PortingEmbed
@@ -235,13 +238,13 @@ renderSecondaryButton={(name, onPress) => (
 
 `(variant: 'error' | 'info', message: string) => React.ReactNode`
 Render prop function that can be used to customize the rendering of alert banners in the embed.
-Alert banners are used either to convey information or to display errors. 
+Alert banners are used either to convey information or to display errors.
 The `'info'` type appears in the `holderDetails` and `address` steps as follows:
 
 <img width="400" src="./holderDetailsInfo.png" alt="Account holder info alert banner">
 <img width="400" src="./addressInfo.png" alt="Address info alert banner">
 
-The `'error'` type appears whenever there is an error after submitting a porting step, or if the porting has been declined (see all the declined messages [here](https://github.com/gigs/embeds-react-native/blob/main/src/PortingEmbed/util/portingUtils.tsx#L96)). 
+The `'error'` type appears whenever there is an error after submitting a porting step, or if the porting has been declined (see all the declined messages [here](https://github.com/gigs/embeds-react-native/blob/main/src/PortingEmbed/util/portingUtils.tsx#L96)).
 
 `variant` - The variant of the alert banner (either 'error' or 'info').
 `message` - The message to be displayed in the alert banner.
@@ -249,24 +252,24 @@ Returns a React node representing the customized alert banner component.
 
 ```jsx
 <PortingEmbed
-//...
-renderAlertBanner={(variant, message) => (
-            <View
-              style={[
-                {
-                  backgroundColor: variant === 'error' ? '#FFE4E6' : 'white',
-                },
-              ]}
-            >
-              <Text
-                style={{
-                  color: variant === 'error' ? '#BE123C' : 'black',
-                }}
-              >
-                {message}
-              </Text>
-            </View>
-          )}
+  //...
+  renderAlertBanner={(variant, message) => (
+    <View
+      style={[
+        {
+          backgroundColor: variant === 'error' ? '#FFE4E6' : 'white',
+        },
+      ]}
+    >
+      <Text
+        style={{
+          color: variant === 'error' ? '#BE123C' : 'black',
+        }}
+      >
+        {message}
+      </Text>
+    </View>
+  )}
 />
 ```
 
@@ -314,29 +317,31 @@ If no `renderPortingProtectionDisabledConfirmation` prop is passed to the compon
 
 ```jsx
 <PortingEmbed
-//...
-renderPortingProtectionDisabledConfirmation={(onConfirm) => (
-            <View>
-              <Text>
-                After you have received confirmation that port protection has
-                been deactivated and your number is prepared for porting, kindly
-                inform us by clicking the button below to confirm.
-              </Text>
-              <Button title={'Confirm'} onPress={onConfirm} color={'blue'} />
-            </View>
-          )}
+  //...
+  renderPortingProtectionDisabledConfirmation={(onConfirm) => (
+    <View>
+      <Text>
+        After you have received confirmation that port protection has been
+        deactivated and your number is prepared for porting, kindly inform us by
+        clicking the button below to confirm.
+      </Text>
+      <Button title={'Confirm'} onPress={onConfirm} color={'blue'} />
+    </View>
+  )}
 />
 ```
+
 #### `defaultTextFont`
 
 The default font that the embed uses for all default components, i.e. all components that are not replaced by a corresponding render prop (for example all inputs will use the `defaultTextFont` if no `renderInput` component was passed to the embed).
 
 ```jsx
 <PortingEmbed
-//...
-defaultTextFont='Custom-font'
+  //...
+  defaultTextFont="Custom-font"
 />
 ```
+
 #### `renderProvidersDropdown`
 
 Render prop function that can be used to customize the rendering of a component to select the current carrier.
@@ -372,25 +377,25 @@ renderProvidersDropdown={(name, providers, onChange) => (
 
 #### Porting Embed props
 
-| Prop                 | Type                   | Required | Description/Signature                                                                                  |
-| -------------------- | ---------------------- | -------- | -------------------------------------------------------------------------------------------- |
-| `connectSession`     | Connect Session object | ✅       | A Connect Session object with an intent of type `completePorting`.                           |
-| `project`            | string                 | ✅       | Your project ID.                                                                             |
-| `onCompleted`        | function               | ✅       | `(porting:  Porting)  =>  unknown`                                                           |
-| `onInitialized`      | function               | ❌       | `()  =>  unknown`                                                                            |
-| `onLoaded`           | function               | ❌       | `()  =>  unknown`                                                                            |
-| `onError`            | function               | ❌       | `(error:  Error)  =>  unknown`                                                               |
-| `onSupportRequested` | function               | ❌       | `() => unknown`                                                                              |
-| `onPortingStep`      | function               | ❌       | `(step: PortingStep) => unknown`                                                             |
-| `renderTitle`        | function               | ❌       | `(step: PortingStep) => unknown`                                                             |
-| `renderCheckbox`        | function               | ❌       | `(name: string, onChange: (value: string) => void, inputMode?: InputModeOptions) => unknown` |
-| `renderPrimaryButton`        | function               | ❌       | `(onPress: () => void, name?: string, isSubmitting?: boolean, disabled?: boolean) => React.ReactNode` |
-| `renderSecondaryButton`        | function               | ❌       | `(name: string, onPress: () => void) => React.ReactNode` |
-| `renderAlertBanner`        | function               | ❌       | `(variant: 'error' | 'info', message: string) => React.ReactNode` |
-| `renderDate`        | function               | ❌       | `(name: string, onChange: (value: string) => void) => React.ReactNode` |
-| `renderPortingProtectionDisabledConfirmation`        | function               | ❌       | `(onConfirm: () => void) => React.ReactNode` |
-| `renderProvidersDropdown`        | function               | ❌       | `(name: string, providers: {id: string; name: string;}[], onChange: (value: string) => void) => React.ReactNode` |
-| `defaultTextFont`        | string               | ❌       | Custom font used in all default components. |
+| Prop                                          | Type                   | Required | Description/Signature                                                                                            |
+| --------------------------------------------- | ---------------------- | -------- | ---------------------------------------------------------------------------------------------------------------- | -------------------------------------------- |
+| `connectSession`                              | Connect Session object | ✅       | A Connect Session object with an intent of type `completePorting`.                                               |
+| `project`                                     | string                 | ✅       | Your project ID.                                                                                                 |
+| `onCompleted`                                 | function               | ✅       | `(porting:  Porting)  =>  unknown`                                                                               |
+| `onError`                                     | function               | ✅       | `(error?:  Error, porting?: Porting, errorCode?: PortingEmbedError)  =>  unknown`                                                                                   |
+| `onInitialized`                               | function               | ❌       | `()  =>  unknown`                                                                                                |
+| `onLoaded`                                    | function               | ❌       | `()  =>  unknown`                                                                                                |
+| `onSupportRequested`                          | function               | ❌       | `() => unknown`                                                                                                  |
+| `onPortingStep`                               | function               | ❌       | `(step: PortingStep) => unknown`                                                                                 |
+| `renderTitle`                                 | function               | ❌       | `(step: PortingStep) => unknown`                                                                                 |
+| `renderCheckbox`                              | function               | ❌       | `(name: string, onChange: (value: string) => void, inputMode?: InputModeOptions) => unknown`                     |
+| `renderPrimaryButton`                         | function               | ❌       | `(onPress: () => void, name?: string, isSubmitting?: boolean, disabled?: boolean) => React.ReactNode`            |
+| `renderSecondaryButton`                       | function               | ❌       | `(name: string, onPress: () => void) => React.ReactNode`                                                         |
+| `renderAlertBanner`                           | function               | ❌       | `(variant: 'error'                                                                                               | 'info', message: string) => React.ReactNode` |
+| `renderDate`                                  | function               | ❌       | `(name: string, onChange: (value: string) => void) => React.ReactNode`                                           |
+| `renderPortingProtectionDisabledConfirmation` | function               | ❌       | `(onConfirm: () => void) => React.ReactNode`                                                                     |
+| `renderProvidersDropdown`                     | function               | ❌       | `(name: string, providers: {id: string; name: string;}[], onChange: (value: string) => void) => React.ReactNode` |
+| `defaultTextFont`                             | string                 | ❌       | Custom font used in all default components.                                                                      |
 
 #### Text
 
@@ -415,6 +420,5 @@ renderProvidersDropdown={(name, providers, onChange) => (
 | `protectionDisabling.cancel`  | Cancel                      |
 | `portingInfoLink`             | See Porting instructions    |
 | `protectionDisabling.button`  | Request Porting Again       |
-| `portingDeclined.button`      | Contact Customer support    |
 | `donorProvider`               | N/A                         |
 | `donorProvider.dropdown`      | Donor providers dropdown    |

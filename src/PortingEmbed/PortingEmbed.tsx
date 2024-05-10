@@ -7,12 +7,18 @@ import { CustomOptionsProvider } from './CustomOptionsProvider'
 import { PortingStep } from './nextPortingStep'
 import { PortingFormContainer } from './PortingFormContainer'
 
+export type PortingEmbedError = 'portingDeclined' | string
+
 type Props = {
   connectSession?: unknown
   project: string
   onLoaded?: () => unknown
   onInitialized?: () => unknown
-  onError?: (error: Error) => unknown
+  onError: (
+    error?: Error,
+    porting?: Porting,
+    errorCode?: PortingEmbedError
+  ) => unknown
   onCompleted: (porting: Porting) => unknown
   onSupportRequested?: () => unknown
   onPortingStep?: (portingStep: PortingStep) => unknown
@@ -56,7 +62,6 @@ export function PortingEmbed({
   onLoaded,
   onError,
   onCompleted,
-  onSupportRequested,
   onPortingStep,
   renderTitle,
   renderInput,
@@ -90,12 +95,12 @@ export function PortingEmbed({
         }
         defaultTextFont={defaultTextFont}
         renderProvidersDropdown={renderProvidersDropdown}
+        onError={onError}
       >
         <PortingFormContainer
           onLoaded={onLoaded}
           onError={onError}
           onCompleted={onCompleted}
-          onSupportRequested={onSupportRequested}
           onPortingStep={onPortingStep}
         />
       </CustomOptionsProvider>
