@@ -75,6 +75,7 @@ describe('CarrierInfoForm', () => {
               Custom carrier details title
             </Text>
           ),
+          onError: () => jest.fn(),
         }}
       >
         <CarrierInfoForm
@@ -108,6 +109,7 @@ describe('CarrierInfoForm', () => {
               placeholder={placeholders[name]}
             />
           ),
+          onError: () => jest.fn(),
         }}
       >
         <CarrierInfoForm
@@ -136,6 +138,7 @@ describe('CarrierInfoForm', () => {
                 disabled={disabled}
               />
             ),
+            onError: () => jest.fn(),
           }}
         >
           <CarrierInfoForm
@@ -173,6 +176,7 @@ describe('CarrierInfoForm', () => {
                 onPress={onPress}
               />
             ),
+            onError: () => jest.fn(),
           }}
         >
           <CarrierInfoForm
@@ -211,6 +215,7 @@ describe('CarrierInfoForm', () => {
           renderSecondaryButton: (name, _onPress) => (
             <Button onPress={onPressLink} title={placeholders[name]!} />
           ),
+          onError: () => jest.fn(),
         }}
       >
         <CarrierInfoForm
@@ -251,6 +256,7 @@ describe('CarrierInfoForm', () => {
               </Text>
             </View>
           ),
+          onError: () => jest.fn(),
         }}
       >
         <CarrierInfoForm
@@ -271,6 +277,7 @@ describe('CarrierInfoForm', () => {
       <CustomOptionsContext.Provider
         value={{
           defaultTextFont: 'Custom-font',
+          onError: () => jest.fn(),
         }}
       >
         <CarrierInfoForm

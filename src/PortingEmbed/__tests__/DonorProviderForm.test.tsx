@@ -110,6 +110,7 @@ describe('DonorProviderForm', () => {
                 onPress={onPress}
               />
             ),
+            onError: () => jest.fn(),
           }}
         >
           <DonorProviderForm

@@ -82,6 +82,7 @@ describe('AddressForm', () => {
               Custom address title
             </Text>
           ),
+          onError: () => jest.fn(),
         }}
       >
         <AddressForm
@@ -120,6 +121,7 @@ describe('AddressForm', () => {
               placeholder={placeholders[name]}
             />
           ),
+          onError: () => jest.fn(),
         }}
       >
         <AddressForm
@@ -155,6 +157,7 @@ describe('AddressForm', () => {
                 disabled={disabled}
               />
             ),
+            onError: () => jest.fn(),
           }}
         >
           <AddressForm
@@ -200,6 +203,7 @@ describe('AddressForm', () => {
                 onPress={onPress}
               />
             ),
+            onError: () => jest.fn(),
           }}
         >
           <AddressForm
@@ -239,6 +243,7 @@ describe('AddressForm', () => {
           renderSecondaryButton: (name, _onPress) => (
             <Button onPress={onPressLink} title={placeholders[name]!} />
           ),
+          onError: () => jest.fn(),
         }}
       >
         <AddressForm
@@ -280,6 +285,7 @@ describe('AddressForm', () => {
               </Text>
             </View>
           ),
+          onError: () => jest.fn(),
         }}
       >
         <AddressForm
@@ -319,6 +325,7 @@ describe('AddressForm', () => {
               </Text>
             </View>
           ),
+          onError: () => jest.fn(),
         }}
       >
         <AddressForm
@@ -339,6 +346,7 @@ describe('AddressForm', () => {
       <CustomOptionsContext.Provider
         value={{
           defaultTextFont: 'Custom-font',
+          onError: () => jest.fn(),
         }}
       >
         <AddressForm

@@ -83,6 +83,7 @@ describe('AccountHolderForm', () => {
               Custom account holder title
             </Text>
           ),
+          onError: () => jest.fn(),
         }}
       >
         <AccountHolderForm
@@ -131,6 +132,7 @@ describe('AccountHolderForm', () => {
               placeholder={placeholders[name]}
             />
           ),
+          onError: () => jest.fn(),
         }}
       >
         <AccountHolderForm
@@ -160,6 +162,7 @@ describe('AccountHolderForm', () => {
               placeholder={placeholders[name]}
             />
           ),
+          onError: () => jest.fn(),
         }}
       >
         <AccountHolderForm
@@ -202,6 +205,7 @@ describe('AccountHolderForm', () => {
                 disabled={disabled}
               />
             ),
+            onError: () => jest.fn(),
           }}
         >
           <AccountHolderForm
@@ -239,6 +243,7 @@ describe('AccountHolderForm', () => {
                 onPress={onPress}
               />
             ),
+            onError: () => jest.fn(),
           }}
         >
           <AccountHolderForm
@@ -275,6 +280,7 @@ describe('AccountHolderForm', () => {
           renderSecondaryButton: (name, _onPress) => (
             <Button onPress={onPressLink} title={placeholders[name]!} />
           ),
+          onError: () => jest.fn(),
         }}
       >
         <AccountHolderForm
@@ -317,6 +323,7 @@ describe('AccountHolderForm', () => {
               </Text>
             </View>
           ),
+          onError: () => jest.fn(),
         }}
       >
         <AccountHolderForm
@@ -356,6 +363,7 @@ describe('AccountHolderForm', () => {
               </Text>
             </View>
           ),
+          onError: () => jest.fn(),
         }}
       >
         <AccountHolderForm
@@ -377,6 +385,7 @@ describe('AccountHolderForm', () => {
       <CustomOptionsContext.Provider
         value={{
           defaultTextFont: 'Custom-font',
+          onError: () => jest.fn(),
         }}
       >
         <AccountHolderForm
