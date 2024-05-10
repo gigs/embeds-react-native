@@ -77,11 +77,6 @@ Callback triggered when the embed form is loaded with a subscription and the rel
 `(step: PortingStep) => unknown`  
 Callback that returns the current porting step. Useful to display custom headlines and information in your app depending on the step.
 
-#### `onSupportRequested`
-
-`() => unknown`  
-Callback triggered when the user has clicked the "Customer support" button. You can use it, for example, to open your own Customer support page.
-
 #### `renderTitle`
 
 `(step: PortingStep) => unknown`  
@@ -385,7 +380,6 @@ renderProvidersDropdown={(name, providers, onChange) => (
 | `onError`                                     | function               | ✅       | `(error?:  Error, porting?: Porting, errorCode?: PortingEmbedError)  =>  unknown`                                                                                   |
 | `onInitialized`                               | function               | ❌       | `()  =>  unknown`                                                                                                |
 | `onLoaded`                                    | function               | ❌       | `()  =>  unknown`                                                                                                |
-| `onSupportRequested`                          | function               | ❌       | `() => unknown`                                                                                                  |
 | `onPortingStep`                               | function               | ❌       | `(step: PortingStep) => unknown`                                                                                 |
 | `renderTitle`                                 | function               | ❌       | `(step: PortingStep) => unknown`                                                                                 |
 | `renderCheckbox`                              | function               | ❌       | `(name: string, onChange: (value: string) => void, inputMode?: InputModeOptions) => unknown`                     |

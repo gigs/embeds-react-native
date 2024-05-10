@@ -20,7 +20,6 @@ type Props = {
     errorCode?: PortingEmbedError
   ) => unknown
   onCompleted: (porting: Porting) => unknown
-  onSupportRequested?: () => unknown
   onPortingStep?: (portingStep: PortingStep) => unknown
   renderTitle?: (step: PortingStep) => React.ReactNode
   renderInput?: (
