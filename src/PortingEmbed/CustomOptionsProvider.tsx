@@ -2,9 +2,10 @@ import { createContext, ReactNode, useContext } from 'react'
 import { InputModeOptions } from 'react-native'
 
 import { PortingStep } from './nextPortingStep'
+import { Metadata } from './PortingEmbed'
 
 type EmbedOptions = {
-  onError?: (error: Error) => unknown
+  onError: (error: Error, meta: Metadata) => unknown
   renderTitle?: (step: PortingStep) => React.ReactNode
   renderInput?: (
     name: string,

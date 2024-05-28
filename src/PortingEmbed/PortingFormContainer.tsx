@@ -15,16 +15,15 @@ import { AddressForm } from './features/Address/AddressForm'
 import { CarrierInfoForm } from './features/CarrierDetails/CarrierDetailsForm'
 import { DonorApprovalForm } from './features/DonorApproval/DonorApprovalForm'
 import { DonorProviderForm } from './features/DonorProvider/DonorProviderForm'
-import { GenericPortingDeclined } from './features/GenericPortingDeclined'
 import { ProtectionDisabling } from './features/ProtectionDisabling'
 import { nextPortingStep, PortingStep } from './nextPortingStep'
+import { Metadata } from './PortingEmbed'
 import { hasAllRequiredFieldsCompleted } from './util/portingUtils'
 
 type Props = {
-  onError?: (error: Error) => unknown
+  onError: (error: Error, meta: Metadata) => unknown
   onLoaded?: () => unknown
   onCompleted: (porting: Porting) => unknown
-  onSupportRequested?: () => unknown
   onPortingStep?: (portingStep: PortingStep) => unknown
 }
 
@@ -32,7 +31,6 @@ export function PortingFormContainer({
   onError,
   onLoaded,
   onCompleted,
-  onSupportRequested,
   onPortingStep,
 }: Props) {
   const { connectSession } = useSessionContext()
@@ -52,9 +50,20 @@ export function PortingFormContainer({
   useEffect(() => {
     if (!error) return
 
-    onError?.(new Error(error))
+    if (error instanceof ApiError) {
+      onError(error, {
+        code: error.code,
+        porting: subscription?.porting || undefined,
+      })
+    } else {
+      onError(new Error(error), {
+        code: 'initializationError',
+        porting: subscription?.porting || undefined,
+      })
+    }
+
     console.error(error)
-  }, [error, onError])
+  }, [error, onError, subscription])
 
   // TODO: move onLoaded into the initial data fetching instead of an effect, so
   // it can't trigger multiple times, and will only be triggered for the initial
@@ -73,18 +82,34 @@ export function PortingFormContainer({
     return subscription?.porting ? nextPortingStep(subscription?.porting) : null
   }, [subscription?.porting])
 
+  const portingIsCompleted =
+    subscription?.porting &&
+    hasAllRequiredFieldsCompleted(subscription.porting) &&
+    !subscription.porting.declinedCode
+
+  const portingIsDeclined = subscription?.porting?.status === 'declined'
+
   useEffect(() => {
-    if (
-      subscription?.porting &&
-      hasAllRequiredFieldsCompleted(subscription.porting) &&
-      !subscription.porting.declinedCode
-    ) {
-      onCompleted(subscription.porting) // handles the case of coming back to a Porting when the required porting fields have been filled out
+    if (portingIsCompleted) {
+      onCompleted(subscription.porting!) // handles the case of coming back to a Porting when the required porting fields have been successfully filled out
       onPortingStep?.(null)
+    } else if (portingIsDeclined) {
+      onError(new Error('Porting is declined'), {
+        code: 'portingDeclined',
+        porting: subscription.porting!,
+      }) // handles the case of coming back to a declined Porting
     } else {
       onPortingStep?.(portingStep)
     }
-  }, [subscription?.porting, onCompleted, onPortingStep, portingStep])
+  }, [
+    subscription?.porting,
+    onCompleted,
+    onError,
+    onPortingStep,
+    portingStep,
+    portingIsCompleted,
+    portingIsDeclined,
+  ])
 
   if (!subscription) {
     return null
@@ -101,6 +126,12 @@ export function PortingFormContainer({
       const porting = await updatePorting(subscription.porting!.id, portingData)
 
       if (hasAllRequiredFieldsCompleted(porting)) {
+        if (porting.status === 'declined') {
+          onError(new Error('Porting is declined'), {
+            code: 'portingDeclined',
+            porting: subscription.porting!,
+          })
+        }
         onCompleted(porting)
         onPortingStep?.(portingStep)
         return
@@ -112,6 +143,17 @@ export function PortingFormContainer({
       setPortingUpdateError(
         e instanceof ApiError ? e.message : 'Something went wrong.'
       )
+      if (e instanceof ApiError) {
+        onError(e, {
+          code: e.code,
+          porting: subscription?.porting || undefined,
+        })
+      } else {
+        onError(new Error('Something went wrong.'), {
+          code: 'unexpectedError',
+          porting: subscription?.porting || undefined,
+        })
+      }
     } finally {
       setSubmitting(false)
     }
@@ -170,12 +212,6 @@ export function PortingFormContainer({
             declinedCode={subscription.porting.declinedCode}
           />
         )}
-      {subscription.porting.declinedCode && portingStep === null && (
-        <GenericPortingDeclined
-          declinedCode={subscription.porting.declinedCode}
-          onSupportRequested={onSupportRequested}
-        />
-      )}
     </View>
   )
 }

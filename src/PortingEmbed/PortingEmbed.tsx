@@ -3,18 +3,29 @@ import { InputModeOptions } from 'react-native'
 
 import { Porting } from '../../types/porting'
 import { ConnectSessionProvider } from '../core/ConnectSessionProvider'
+import { ApiErrorType } from '../data/api'
 import { CustomOptionsProvider } from './CustomOptionsProvider'
 import { PortingStep } from './nextPortingStep'
 import { PortingFormContainer } from './PortingFormContainer'
+
+export type Metadata = {
+  code:
+    | 'portingDeclined'
+    | 'tokenFetchingError'
+    | 'initializationError'
+    | 'providersNotFound'
+    | 'unexpectedError'
+    | ApiErrorType
+  porting?: Porting
+}
 
 type Props = {
   connectSession?: unknown
   project: string
   onLoaded?: () => unknown
   onInitialized?: () => unknown
-  onError?: (error: Error) => unknown
+  onError: (error: Error, meta: Metadata) => unknown
   onCompleted: (porting: Porting) => unknown
-  onSupportRequested?: () => unknown
   onPortingStep?: (portingStep: PortingStep) => unknown
   renderTitle?: (step: PortingStep) => React.ReactNode
   renderInput?: (
@@ -56,7 +67,6 @@ export function PortingEmbed({
   onLoaded,
   onError,
   onCompleted,
-  onSupportRequested,
   onPortingStep,
   renderTitle,
   renderInput,
@@ -90,12 +100,12 @@ export function PortingEmbed({
         }
         defaultTextFont={defaultTextFont}
         renderProvidersDropdown={renderProvidersDropdown}
+        onError={onError}
       >
         <PortingFormContainer
           onLoaded={onLoaded}
           onError={onError}
           onCompleted={onCompleted}
-          onSupportRequested={onSupportRequested}
           onPortingStep={onPortingStep}
         />
       </CustomOptionsProvider>

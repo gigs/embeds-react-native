@@ -86,6 +86,7 @@ describe('DonorApprovalForm', () => {
               onChecked={onChecked}
             />
           ),
+          onError: () => jest.fn(),
         }}
       >
         <DonorApprovalForm
@@ -126,6 +127,7 @@ describe('DonorApprovalForm', () => {
               disabled={disabled}
             />
           ),
+          onError: () => jest.fn(),
         }}
       >
         <DonorApprovalForm
@@ -156,6 +158,7 @@ describe('DonorApprovalForm', () => {
       <CustomOptionsContext.Provider
         value={{
           defaultTextFont: 'Custom-font',
+          onError: () => jest.fn(),
         }}
       >
         <DonorApprovalForm

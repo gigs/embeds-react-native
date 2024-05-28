@@ -14,19 +14,20 @@ import {
 
 import { PortingEmbed } from '../../../src'
 import { PortingStep } from '../../../src/PortingEmbed/nextPortingStep'
+import { Porting } from '../../../types/porting'
 
 export default function PortingEmbedScreen() {
   const [sessionJson, setSessionJson] = useState('')
   const [connectSession, setConnectSession] = useState<any>(null)
   const [isLoaded, setLoaded] = useState(false)
   const [isCompleted, setCompleted] = useState(false)
-  const [clickedCustomerSupport, setClickedCustomerSupport] = useState(false)
   const [portingStep, setPortingStep] = useState<PortingStep>()
   const [isChecked, setChecked] = useState(false)
   const [date, setDate] = useState<Date | undefined>(new Date())
   const [currentProvider, setCurrentProvider] = useState<string | undefined>(
     undefined
   )
+  const [isPortingDeclined, setPortingDeclined] = useState<boolean>(false)
 
   function handleSubmit() {
     setConnectSession(JSON.parse(sessionJson))
@@ -41,11 +42,19 @@ export default function PortingEmbedScreen() {
     setLoaded(true)
   }, [])
 
-  const handleError = useCallback((_error: Error) => {
-    console.log('onError triggered')
-    setLoaded(false)
-    setConnectSession(null)
-  }, [])
+  type PortingEmbedError = 'portingDeclined' | string
+
+  const handleError = useCallback(
+    (_error: Error, meta: { code: PortingEmbedError; porting?: Porting }) => {
+      console.log('onError triggered')
+      if (meta.code && meta.code === 'portingDeclined') {
+        setPortingDeclined(true)
+      }
+      setLoaded(false)
+      setConnectSession(null)
+    },
+    []
+  )
 
   const handleInitialized = useCallback(() => {
     console.log('onInitialized triggered, embed got a token')
@@ -71,7 +80,6 @@ export default function PortingEmbedScreen() {
     'protectionDisabling.cancel': 'Cancel',
     portingInfoLink: 'See Porting instructions',
     'protectionDisabling.button': 'Request Porting Again',
-    'portingDeclined.button': 'Contact Customer support',
     donorProvider: 'Current provider',
     'donorProvider.dropdown': 'Select your current provider',
   }
@@ -113,10 +121,8 @@ export default function PortingEmbedScreen() {
       <View style={{ width: '100%', height: 1, backgroundColor: 'gray' }} />
       {Boolean(!isLoaded && connectSession) && <Text>Loading...</Text>}
       {isCompleted && <Text>The porting is submitted!</Text>}
-      {clickedCustomerSupport && (
-        <Text>User has requested customer support</Text>
-      )}
       {portingStep && <Text>Current Porting step: {portingStep}</Text>}
+      {isPortingDeclined && <Text>The porting was declined.</Text>}
       {!isCompleted && (
         <PortingEmbed
           project="dev"
@@ -125,7 +131,6 @@ export default function PortingEmbedScreen() {
           onLoaded={handleLoaded}
           onError={handleError}
           onCompleted={() => setCompleted(true)}
-          onSupportRequested={() => setClickedCustomerSupport(true)}
           onPortingStep={(step) => setPortingStep(step)}
           defaultTextFont="Satoshi-Regular"
           renderTitle={(step) =>
