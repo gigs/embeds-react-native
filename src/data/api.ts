@@ -7,12 +7,49 @@ import { useSessionContext } from '../core/ConnectSessionProvider'
 
 const baseUrlWithProjects = `https://api.gigs.com/projects`
 
-export class ApiError extends Error {}
+export type ApiErrorType =
+  | 'malformed'
+  | 'unauthenticated'
+  | 'permissionDenied'
+  | 'notFound'
+  | 'conflict'
+  | 'invalid'
+  | 'tooManyRequests'
+  | 'internal'
+  | 'notImplemented'
+  | 'networkError'
+
+interface ApiErrorOptions {
+  type: string
+  code: ApiErrorType
+  message: string
+  hint: string
+  documentation: string[]
+}
+
+export class ApiError extends Error {
+  object: string
+  type: string
+  code: ApiErrorType
+  hint: string
+  documentation: string[]
+
+  constructor({ type, code, message, hint, documentation }: ApiErrorOptions) {
+    super(message)
+    this.object = 'error'
+    this.type = type
+    this.code = code
+    this.hint = hint
+    this.documentation = documentation
+
+    Object.setPrototypeOf(this, ApiError.prototype)
+  }
+}
 
 export function useGetSubscription(subscription: string) {
   const { project, token } = useSessionContext()
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const [error, setError] = useState<ApiError | string | null>(null)
   const [data, setData] = useState<null | Subscription>(null)
 
   const getSubscription = useCallback(async () => {
@@ -35,7 +72,7 @@ export function useGetSubscription(subscription: string) {
       }
     } catch (e) {
       if (e instanceof ApiError) {
-        setError(e.message)
+        setError(e)
       } else {
         setError('Something went wrong')
       }
@@ -94,8 +131,8 @@ export function useUpdatePorting() {
         const body = await res
           .json()
           .catch(async () => ({ message: await res.text() }))
-          .catch((error) => ({ message: error.message }))
-        throw new ApiError('Failed: ' + body.message)
+          .catch((error) => error)
+        throw new ApiError(body.error)
       }
 
       const body = (await res.json()) as Porting

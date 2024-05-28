@@ -53,12 +53,15 @@ Callback triggered when the number porting is completed.
 
 #### `onError`
 
-`(error?:  Error, porting?: Porting, errorCode?: PortingEmbedError)  =>  unknown`
+`(error: Error, meta: Metadata)  =>  unknown`
 
-Callback triggered when: 
-* There is an error initializing the porting form. The error may stem from an invalid session, in which case recovery can be attempted by generating and passing a new Connect session to the embed. The `error` is passed as an argument to the callback.
-* There is a failed attempt to retrieve a subscription. In this case it is advisable to inform the user to try again later or to contact customer support for assistance. The `error` is passed as an argument to the callback.
-* The porting has been declined. The `porting` object and the error code `portingDeclined` are passed as arguments to the callback. 
+Callback triggered when the embed is in an error state. The `metadata` object includes a `code` field for the error, which gives more context about the error, and an optional `porting` field. The callback is triggered when:
+
+- There is an error initializing the porting form (code `'initializationError'`). The error may stem from an invalid session, in which case recovery can be attempted by generating and passing a new Connect session to the embed. The `porting` object is passed if present.
+- There is an error retrieving the authorization token (code `'tokenFetchingError'`). 
+- There is a failed attempt to retrieve a subscription (the code is passed from the [Gigs API Error codes](https://developers.gigs.com/docs/concepts/error-codes)). In this case it is advisable to inform the user to try again later or to contact customer support for assistance. The `error` is passed as an argument to the callback.
+- There is an error fetching service providers in the donor providers form (`'providersNotFound'`).
+- The porting has been declined. The `porting` object and the error code `portingDeclined` are passed as arguments to the callback.
 
 ### Optional props
 
@@ -377,7 +380,7 @@ renderProvidersDropdown={(name, providers, onChange) => (
 | `connectSession`                              | Connect Session object | ✅       | A Connect Session object with an intent of type `completePorting`.                                               |
 | `project`                                     | string                 | ✅       | Your project ID.                                                                                                 |
 | `onCompleted`                                 | function               | ✅       | `(porting:  Porting)  =>  unknown`                                                                               |
-| `onError`                                     | function               | ✅       | `(error?:  Error, porting?: Porting, errorCode?: PortingEmbedError)  =>  unknown`                                                                                   |
+| `onError`                                     | function               | ✅       | `(error:  Error, meta: Metadata)  =>  unknown`                                                                   |
 | `onInitialized`                               | function               | ❌       | `()  =>  unknown`                                                                                                |
 | `onLoaded`                                    | function               | ❌       | `()  =>  unknown`                                                                                                |
 | `onPortingStep`                               | function               | ❌       | `(step: PortingStep) => unknown`                                                                                 |

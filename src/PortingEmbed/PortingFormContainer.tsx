@@ -50,12 +50,20 @@ export function PortingFormContainer({
   useEffect(() => {
     if (!error) return
 
-    onError(new Error(error), {
-      code: 'initializationError',
-      porting: subscription?.porting || undefined,
-    })
+    if (error instanceof ApiError) {
+      onError(error, {
+        code: error instanceof ApiError ? error.code : 'initializationError',
+        porting: subscription?.porting || undefined,
+      })
+    } else {
+      onError(new Error(error), {
+        code: 'initializationError',
+        porting: subscription?.porting || undefined,
+      })
+    }
+
     console.error(error)
-  }, [error, onError, subscription?.porting])
+  }, [error, onError, subscription])
 
   // TODO: move onLoaded into the initial data fetching instead of an effect, so
   // it can't trigger multiple times, and will only be triggered for the initial
@@ -135,10 +143,17 @@ export function PortingFormContainer({
       setPortingUpdateError(
         e instanceof ApiError ? e.message : 'Something went wrong.'
       )
-      onError(e instanceof ApiError ? e : new Error('Something went wrong.'), {
-        code: 'unexpectedError',
-        porting: subscription?.porting || undefined,
-      })
+      if (e instanceof ApiError) {
+        onError(e, {
+          code: e.code,
+          porting: subscription?.porting || undefined,
+        })
+      } else {
+        onError(new Error('Something went wrong.'), {
+          code: 'unexpectedError',
+          porting: subscription?.porting || undefined,
+        })
+      }
     } finally {
       setSubmitting(false)
     }

@@ -3,16 +3,19 @@ import { InputModeOptions } from 'react-native'
 
 import { Porting } from '../../types/porting'
 import { ConnectSessionProvider } from '../core/ConnectSessionProvider'
+import { ApiErrorType } from '../data/api'
 import { CustomOptionsProvider } from './CustomOptionsProvider'
 import { PortingStep } from './nextPortingStep'
 import { PortingFormContainer } from './PortingFormContainer'
 
-export type PortingEmbedError = 'portingDeclined' | string
-
-export type Metadata = PortingEmbedErrorMetadata
-
-type PortingEmbedErrorMetadata = {
-  code: PortingEmbedError
+export type Metadata = {
+  code:
+    | 'portingDeclined'
+    | 'tokenFetchingError'
+    | 'initializationError'
+    | 'providersNotFound'
+    | 'unexpectedError'
+    | ApiErrorType
   porting?: Porting
 }
 
