@@ -45,9 +45,9 @@ export default function PortingEmbedScreen() {
   type PortingEmbedError = 'portingDeclined' | string
 
   const handleError = useCallback(
-    (_error?: Error, _porting?: Porting, errorCode?: PortingEmbedError) => {
+    (_error: Error, meta: { code: PortingEmbedError; porting?: Porting }) => {
       console.log('onError triggered')
-      if (errorCode && errorCode === 'portingDeclined') {
+      if (meta.code && meta.code === 'portingDeclined') {
         setPortingDeclined(true)
       }
       setLoaded(false)

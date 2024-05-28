@@ -4,6 +4,7 @@ import {
   ConnectSession,
   ConnectSessionIntent,
 } from '../../types/connectSession'
+import { Metadata } from '../PortingEmbed/PortingEmbed'
 import { assert } from './assert'
 import { exchangeSessionWithToken } from './token'
 
@@ -23,7 +24,7 @@ type Props = {
   connectSession: unknown
   children: React.ReactNode
   onInitialized?: () => unknown
-  onError: (error: Error) => unknown
+  onError: (error: Error, meta: Metadata) => unknown
 }
 
 export function ConnectSessionProvider({
@@ -90,7 +91,8 @@ export function ConnectSessionProvider({
         onError(
           error instanceof Error
             ? error
-            : new Error(error?.toString() || 'Unexpected error')
+            : new Error(error?.toString() || 'Unexpected error'),
+          { code: 'tokenFetchingError' }
         )
       }
     }

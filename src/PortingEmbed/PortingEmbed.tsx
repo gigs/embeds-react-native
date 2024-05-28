@@ -9,16 +9,19 @@ import { PortingFormContainer } from './PortingFormContainer'
 
 export type PortingEmbedError = 'portingDeclined' | string
 
+export type Metadata = PortingEmbedErrorMetadata
+
+type PortingEmbedErrorMetadata = {
+  code: PortingEmbedError
+  porting?: Porting
+}
+
 type Props = {
   connectSession?: unknown
   project: string
   onLoaded?: () => unknown
   onInitialized?: () => unknown
-  onError: (
-    error?: Error,
-    porting?: Porting,
-    errorCode?: PortingEmbedError
-  ) => unknown
+  onError: (error: Error, meta: Metadata) => unknown
   onCompleted: (porting: Porting) => unknown
   onPortingStep?: (portingStep: PortingStep) => unknown
   renderTitle?: (step: PortingStep) => React.ReactNode
