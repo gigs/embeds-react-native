@@ -52,7 +52,7 @@ export function PortingFormContainer({
 
     if (error instanceof ApiError) {
       onError(error, {
-        code: error instanceof ApiError ? error.code : 'initializationError',
+        code: error.code,
         porting: subscription?.porting || undefined,
       })
     } else {
