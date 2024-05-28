@@ -380,15 +380,14 @@ describe('PortingFormContainer', () => {
       )
 
       await waitFor(() => {
-        expect(onError).toBeCalledWith(
-          undefined,
-          {
+        expect(onError).toBeCalledWith(new Error('Porting is declined'), {
+          code: 'portingDeclined',
+          porting: {
             ...porting,
             status: 'declined',
             declinedCode: 'portingUserInformationMismatch',
           },
-          'portingDeclined'
-        )
+        })
       })
     })
   })
