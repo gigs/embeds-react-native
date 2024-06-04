@@ -19,7 +19,7 @@ To use Gigs Embeds, you need:
 
 1. A Gigs project
 2. A Gigs API Key
-3. A server to create an [authenticated Connect Session](https://developers.gigs.com/docs/api/cdb1438ed4da9-creating-connect-sessions)
+3. A server to create an [authenticated Connect Session](https://developers.gigs.com/docs/connect/connect-sessions/creating-connect-sessions)
 
 > [!TIP]
 > You're not yet a Gigs customer? [Get in touch](https://gigs.com/contact) to discuss the next steps!

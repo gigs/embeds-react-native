@@ -2,7 +2,7 @@
 
 The Porting Embed allows a user to complete a number porting inside your app.
 
-[Number Porting](https://developers.gigs.com/docs/api/29f8ee7096761-how-porting-works) is split up into multiple steps:
+[Number Porting](https://developers.gigs.com/docs/core/how-porting-works) is split up into multiple steps:
 
 1. Carrier Details (Account Number & PIN)
 2. Account Holder Details (First Name, Last Name & Birthday)
@@ -13,7 +13,7 @@ Each step is displayed only if the porting requires certain fields. If the user 
 
 ## Usage
 
-1. Create a Gigs [Connect Session](https://developers.gigs.com/docs/api/cdb1438ed4da9-creating-connect-sessions) on your own server.
+1. Create a Gigs [Connect Session](https://developers.gigs.com/docs/connect/connect-sessions/creating-connect-sessions) on your own server.
 2. Pass the session object from your server to your app.
 3. Initialize the embed using the session object with an intent of type `completePorting`, your project ID and an `onCompleted` callback function.
 4. Navigate the user to the next screen once the number porting is completed.
